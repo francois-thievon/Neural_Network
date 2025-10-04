@@ -34,7 +34,7 @@ Perceptron logistique et petit MLP codés from scratch, avec visualisations inte
 
 Ce projet didactique montre comment implémenter:
 - un perceptron logistique binaire en NumPy, avec frontière de décision + courbe de loss en direct;
-- un petit réseau de neurones (MLP) en empilant le neurone précédent, avec forward/backward et update des poids.
+- un petit réseau de neurones (MLP) en empilant le neurone précédent, avec forward/backward propagation et update des poids.
 
 Tout est regroupé et expliqué dans le notebook: [Neural_network.ipynb](Neural_network.ipynb).
 
@@ -105,12 +105,29 @@ Classes principales définies dans [Neural_network.ipynb](Neural_network.ipynb):
 
 ## Détails algorithmiques
 
-- Sigmoïde: σ(z) = 1 / (1 + e^(−z))
+- Sigmoïde:
+
+  $$
+  \sigma(z) = \frac{1}{1 + e^{-z}}
+  $$
+
 - BCE (log loss binaire):
-  L(y,ŷ) = −(1/m) Σ [ y log(ŷ) + (1−y) log(1−ŷ) ]
-- Sortie BCE+sigmoïde: gradient simplifié dZ = ŷ − y, puis
-  dW = (1/m) Xᵀ dZ,  db = mean(dZ),  dA_prev = dZ Wᵀ
-- Couches cachées: dZ = dA · σ(A) · (1 − σ(A))
+
+  $$
+  \mathcal{L}(y, \hat y) = -\frac{1}{m} \sum_{i=1}^m \Big[ y_i \log(\hat y_i) + (1 - y_i) \log(1 - \hat y_i) \Big]
+  $$
+
+- Sortie (BCE + sigmoïde): gradient simplifié $\;dZ = \hat y - y\,$, puis
+
+  $$
+  dW = \frac{1}{m} X^\top dZ, \qquad db = \mathrm{mean}(dZ), \qquad dA_{\text{prev}} = dZ\, W^\top
+  $$
+
+- Couches cachées (sigmoïde):
+
+  $$
+  dZ = dA \;\cdot\; \sigma(A)\,\big(1 - \sigma(A)\big)
+  $$
 
 ## Structure du projet
 
