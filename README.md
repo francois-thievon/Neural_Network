@@ -1,87 +1,127 @@
-# Neural_network.ipynb — Perceptron logistique et réseau de neurones profond en NumPy
+<div align="center">
 
-Ce notebook construit pas à pas:
-- un perceptron logistique binaire “from scratch” en NumPy, avec affichage interactif de la frontière de décision et de la courbe de loss;
-- un petit réseau de neurones profond (MLP) en empilant le neurone précédent, avec propagation avant/arrière, mise à jour des poids et visualisations en direct.
+# 🧠 Neural Network (NumPy)
 
-Fichier principal:
-- [Neural_network.ipynb](Neural_network.ipynb)
+Perceptron logistique et petit MLP codés from scratch, avec visualisations interactives dans un notebook Jupyter.
 
-## Contenu et API
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](#prerequis) 
+[![NumPy](https://img.shields.io/badge/NumPy-✅-013243?logo=numpy&logoColor=white)](#prerequis)
+[![Matplotlib](https://img.shields.io/badge/Matplotlib-📈-11557c)](#visualisations)
+[![Scikit‑learn](https://img.shields.io/badge/scikit--learn-🧪-f89939?logo=scikitlearn&logoColor=white)](#datasets)
 
-Classes principales définies dans [Neural_network.ipynb](Neural_network.ipynb):
-- Perceptron logistique:
-  - [`artificial_neuron`](Neural_network.ipynb)
-    - Initialisation et utilitaires: [`artificial_neuron.init_params`](Neural_network.ipynb), [`artificial_neuron._sigmoid`](Neural_network.ipynb)
-    - Propagation avant: [`artificial_neuron.forward`](Neural_network.ipynb)
-    - Rétropropagation:
-      - Couches cachées: [`artificial_neuron.backward`](Neural_network.ipynb) (chaîne de gradient via la sigmoïde)
-      - Couche de sortie BCE+sigmoïde: [`artificial_neuron.backward_output`](Neural_network.ipynb) avec $dZ=\hat y - y$
-    - Mise à jour: [`artificial_neuron.update_params`](Neural_network.ipynb)
-    - API “simple” pour le perceptron: [`artificial_neuron.predict_proba`](Neural_network.ipynb), [`artificial_neuron.predict`](Neural_network.ipynb), [`artificial_neuron.log_loss`](Neural_network.ipynb), [`artificial_neuron.fit`](Neural_network.ipynb)
+🎯 Fichier principal: <strong><a href="Neural_network.ipynb">Neural_network.ipynb</a></strong>
 
-- Réseau de neurones (MLP) basé sur la classe ci‑dessus:
-  - [`neural_network`](Neural_network.ipynb)
-    - Construction des couches: liste de listes de neurones selon `architecture` (ex. `[2, 8, 8, 1]`)
-    - Initialisation des poids: [`neural_network._init_all_weights`](Neural_network.ipynb)
-    - Propagation avant sur toutes les couches: [`neural_network._forward_all`](Neural_network.ipynb), exposée via [`neural_network.forward`](Neural_network.ipynb) et [`neural_network.predict_proba`](Neural_network.ipynb)
-    - Perte BCE: [`neural_network._bce_loss`](Neural_network.ipynb)
-    - Entraînement (forward → backward sortie → backward cachées → update): [`neural_network.fit`](Neural_network.ipynb)
-    - Prédiction binaire: [`neural_network.predict`](Neural_network.ipynb)
+</div>
 
-Datasets et démos:
-- Scikit-learn: `make_blobs`, `make_moons`, `make_circles`
-- Générateurs maison: `make_xor`, `make_offset_circles`, `make_donut_vs_arcs`
-- Visualisations: Matplotlib (frontière + loss), Plotly 3D pour la surface sigmoïde
+---
 
-## Détails algorithmiques
+## Sommaire
 
-- Activation sigmoïde: $\sigma(z)=\frac{1}{1+e^{-z}}$
-- Perte logistique binaire (BCE):
-  $$
-  \mathcal{L}(y,\hat y)=-\frac{1}{m}\sum_{i=1}^{m}\big[y_i\log(\hat y_i)+(1-y_i)\log(1-\hat y_i)\big]
-  $$
-- Sortie (BCE+sigmoïde): le gradient simplifie à $dZ=\hat y - y$, puis
-  $$
-  dW=\frac{1}{m}X^\top dZ,\quad db=\mathrm{mean}(dZ),\quad dA_{\text{prev}}=dZ\,W^\top
-  $$
-- Couches cachées: rétroprop via la dérivée de la sigmoïde $dZ=dA\cdot \sigma(A)\cdot(1-\sigma(A))$
+- [Aperçu](#aperçu)
+- [Fonctionnalités](#fonctionnalités)
+- [Démo rapide](#démo-rapide)
+- [Prérequis](#prérequis)
+- [Installation](#installation)
+- [Utilisation](#utilisation)
+- [API dans le notebook](#api-dans-le-notebook)
+- [Datasets](#datasets)
+- [Visualisations](#visualisations)
+- [Détails algorithmiques](#détails-algorithmiques)
+- [Structure du projet](#structure-du-projet)
+- [Notes](#notes)
 
-## Visualisations “live”
+## Aperçu
 
-Pendant [`artificial_neuron.fit`](Neural_network.ipynb) et [`neural_network.fit`](Neural_network.ipynb):
-- Graphe 1: frontière de décision 2D, isolignes et nuage de points coloré par classe
-- Graphe 2: courbe de loss en temps réel
-- Une figure Plotly 3D montre aussi la surface $\sigma(W_0 x_0 + W_1 x_1 + b)$ apprise par le perceptron
+Ce projet didactique montre comment implémenter:
+- un perceptron logistique binaire en NumPy, avec frontière de décision + courbe de loss en direct;
+- un petit réseau de neurones (MLP) en empilant le neurone précédent, avec forward/backward et update des poids.
 
-## Exemples fournis
+Tout est regroupé et expliqué dans le notebook: [Neural_network.ipynb](Neural_network.ipynb).
 
-- Perceptron sur `make_blobs` (binaire), avec affichage au fil de l’entraînement
-- MLP sur:
-  - `make_moons` et `make_circles`
-  - Blobs séparables
-  - Jeux non linéaires maison: XOR, cercles décalés, anneau vs arcs
+## Fonctionnalités
 
-Chaque exemple crée les données, instancie le modèle avec une architecture et des hyperparamètres adaptés, puis appelle `.fit(..., plot_live=True)` pour visualiser l’apprentissage.
+- ✍️ Implémentation “from scratch” (NumPy pur)
+- 🔁 Propagation avant/arrière + mise à jour des poids
+- 📉 Visualisation live: frontière 2D et courbe de loss
+- 🧪 Jeux de données jouets (scikit‑learn + générateurs maison)
+- 🧰 API minimaliste pour entraîner, prédire et tracer
+
+## Démo rapide
+
+1) Installer les dépendances nécessaires.
+2) Ouvrir le notebook.
+3) Lancer les cellules “Exemples”.
+
+Résultat: une frontière de décision qui évolue pendant l’entraînement et une courbe de loss en temps réel. ✨
 
 ## Prérequis
 
 - Python 3.11+
 - Bibliothèques: numpy, matplotlib, scikit-learn, tqdm, plotly, IPython
 
-Installation rapide:
+## Installation
+
 ```bash
 pip install numpy matplotlib scikit-learn tqdm plotly ipython
 ```
 
 ## Utilisation
 
-- Ouvrir [Neural_network.ipynb](Neural_network.ipynb) dans VS Code/Jupyter
-- Exécuter les cellules de haut en bas
-- Adapter `architecture`, `n_iter`, `learning_rate` et les générateurs de données selon vos besoins
+- Ouvrir [Neural_network.ipynb](Neural_network.ipynb) dans VS Code/Jupyter.
+- Exécuter les cellules de haut en bas.
+- Ajuster `architecture`, `n_iter`, `learning_rate` et les générateurs de données selon vos besoins.
+
+## API dans le notebook
+
+Classes principales définies dans [Neural_network.ipynb](Neural_network.ipynb):
+
+- Perceptron logistique — classe `artificial_neuron`
+  - Initialisation/utilitaires: `init_params`, `_sigmoid`
+  - Forward: `forward`
+  - Backward:
+    - Couches cachées: `backward` (chaîne de gradient via sigmoïde)
+    - Sortie BCE+sigmoïde: `backward_output` avec dZ = y_hat − y
+  - Mise à jour: `update_params`
+  - API pratique: `predict_proba`, `predict`, `log_loss`, `fit`
+
+- Réseau de neurones (MLP) — classe `neural_network`
+  - Construction des couches depuis `architecture` (ex. `[2, 8, 8, 1]`)
+  - Initialisation: `_init_all_weights`
+  - Forward sur toutes les couches: `_forward_all` → `forward`/`predict_proba`
+  - Perte: `_bce_loss`
+  - Entraînement: `fit` (forward → backward sortie → backward cachées → update)
+  - Prédiction binaire: `predict`
+
+## Datasets
+
+- Scikit‑learn: `make_blobs`, `make_moons`, `make_circles`
+- Maison: `make_xor`, `make_offset_circles`, `make_donut_vs_arcs`
+
+## Visualisations
+
+- Graphe 1: frontière de décision 2D (isolignes + nuage de points)
+- Graphe 2: courbe de loss en temps réel
+- Bonus: surface sigmoïde 3D (Plotly) apprise par le perceptron
+
+## Détails algorithmiques
+
+- Sigmoïde: σ(z) = 1 / (1 + e^(−z))
+- BCE (log loss binaire):
+  L(y,ŷ) = −(1/m) Σ [ y log(ŷ) + (1−y) log(1−ŷ) ]
+- Sortie BCE+sigmoïde: gradient simplifié dZ = ŷ − y, puis
+  dW = (1/m) Xᵀ dZ,  db = mean(dZ),  dA_prev = dZ Wᵀ
+- Couches cachées: dZ = dA · σ(A) · (1 − σ(A))
+
+## Structure du projet
+
+```
+.
+├── Neural_network.ipynb   # Notebook principal (tout le code et les explications)
+└── README.md              # Vous êtes ici
+```
 
 ## Notes
 
-- La dernière couche est contrainte à 1 neurone (classification binaire BCE).
-- Les poids sont initialisés via une échelle $1/\sqrt{n_{in}}$ dans chaque [`artificial_neuron.init_params`](Neural_network.ipynb) pour des activations stables.
-- Le pas de visualisation se contrôle via `plot_interval`.
+- La dernière couche contient 1 neurone (classification binaire, BCE).
+- Initialisation des poids ~ 1/√n_in pour garder des activations stables.
+- Le rythme d’affichage se règle via `plot_interval`.
